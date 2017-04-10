@@ -81,7 +81,7 @@ OTHER DEALINGS IN THE SOFTWARE.
   NSString *localStorageCache = [cachesPath stringByAppendingFormat:@"/localStorageCache.json"];
   NSError *err = nil;
   UIWebView *webView;
-  if (notice) { webView = [notice object]; } else { webView = self.webView; }
+  if (notice) { webView = [notice object]; } else { webView = (UIWebView*) self.webView; }
   
   NSString *localStorage = @"";
   
@@ -112,14 +112,15 @@ OTHER DEALINGS IN THE SOFTWARE.
   NSArray *dirList = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
   NSString *cachesPath = dirList[0];
   NSError *err = nil;
-
-  NSString *localStorage = [self.webView stringByEvaluatingJavaScriptFromString:@"window.PKLocalStorage.notifyOfPause();  JSON.stringify(localStorage)"];
+  UIWebView *webView = (UIWebView*) self.webView;
+  NSString *localStorage = [webView stringByEvaluatingJavaScriptFromString:@"window.PKLocalStorage.notifyOfPause();  JSON.stringify(localStorage)"];
   [localStorage writeToFile:[cachesPath stringByAppendingFormat:@"/localStorageCache.json"] atomically:YES encoding:NSUTF8StringEncoding error:&err];
 }
 
 -(void) onResume
 {
-  [self.webView stringByEvaluatingJavaScriptFromString:@"window.PKLocalStorage.notifyOfResume();"];
+  UIWebView *webView = (UIWebView*) self.webView;
+  [webView stringByEvaluatingJavaScriptFromString:@"window.PKLocalStorage.notifyOfResume();"];
   NSArray *dirList = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
   NSString *cachesPath = dirList[0];
   NSString *localStorageCache = [cachesPath stringByAppendingFormat:@"/localStorageCache.json"];
